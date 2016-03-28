@@ -28,11 +28,10 @@ def print_dates(all_dates):
     x = range(len(dates)) #spacing 
     
     tweet = list(all_dates.tweet) #values  
-    plot1 = plot.bar(x, tweet, width, color="b", align = "center")#, 
-                     #bottom=[i+j for i, j in zip(all_dates['reply'],all_dates['retweet'])])
+    plot1 = plot.bar(x, tweet, width, color="b", align = "center")
 
     retweet = list(all_dates.retweet) #values  
-    plot2 = plot.bar(x, retweet, width, color="g", align = "center")#, bottom=all_dates['reply'])
+    plot2 = plot.bar(x, retweet, width, color="g", align = "center")
     
     reply = list(all_dates.reply) #values  
     plot3 = plot.bar(x, reply, width, color="r", align = "center")
@@ -61,10 +60,10 @@ def print_hashtags(hashtags, limit = 10):
     fig = plt.figure()
     plot = fig.add_subplot(111)
     
-    pop_tags = list(reversed([tag for tag,count in hashtags.iteritems()][0:10]))
+    pop_tags = list(reversed([tag for tag,count in hashtags.iteritems()][0:limit]))
 
     x = range(limit) #spacing 
-    y = list(reversed([count for tag,count in hashtags.iteritems()][0:10])) #values
+    y = list(reversed([count for tag,count in hashtags.iteritems()][0:limit])) #values
     width = 0.5
     
     plot.bar(x, y, width, color="g", align="center")
@@ -81,5 +80,11 @@ def print_hashtags(hashtags, limit = 10):
     plt.show()
 
 def graph(hashtag_df, dates_df):
+    """Top level function for creating graphs
+    
+    :param hashtag_df: the series describing the hashtags and numbers of occurrences. 
+    :param dates_df: the data frame describing tweets, retweets, and
+    replies per date.
+    """
     print_dates(dates_df)
     print_hashtags(hashtag_df)

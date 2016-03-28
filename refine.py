@@ -1,9 +1,17 @@
-import re, operator, pandas as pd
+import re, operator, json, pandas as pd
 from functools import reduce
 from collections import defaultdict
 
 def _convert_time(date):
     return pd.to_datetime(date.split(" ")[0], format="%d/%m/%Y").isoformat().split("T")[0]
+
+def _convert_hashtags(entities_string):
+    
+    obj = json.loads(entities_string)
+    hashtags = [hashtag["text"] for hashtag in obj["hashtags"]]
+    json_obj = {'hashtags': hashtags}
+    
+    return json.dumps(json_obj)
 
 def refine_data(df):
     """Eliminates unnecessary columns
@@ -17,6 +25,7 @@ def refine_data(df):
         
     df['type'] = df['text'].map(tweet_type)
     df['time'] = df['time'].map(_convert_time)
+    df['hashtags'] = df['entities_str'].map(_convert_hashtags)
     df.to_csv("../refined_digifest16.csv", index=False)
 
 
@@ -40,12 +49,20 @@ def tweet_type(text):
     
     return "tweet"
         
-def _count_types(dates):
+def _count_types(dates, hashtags):
     
     types = defaultdict(int)
+    htags = defaultdict(int)
+    #tweet is type of tweet (retweet, tweet, or reply
     for tweet in dates:
         types[tweet] += 1
+    
+    #hashtags is list of hashtags for a certain day
+    for tags in hashtags:
+        for tag in json.loads(tags)["hashtags"]:
+            htags[tag] += 1
         
+    types['hashtags'] = htags
     return pd.Series(types)
 
 
@@ -64,11 +81,11 @@ def refine_dates(df):
     times = [time for time,tweets in time_group]
     
     result = pd.DataFrame(index = times, 
-                          columns = ["tweet", "retweet", "reply"])
-
+                          columns = ["tweet", "retweet", "reply", "hashtags"])
     result.reset_index(inplace=True)
+    
     for time, tweets in time_group:
-        result.loc[index] = _count_types(tweets.type) 
+        result.loc[index] = _count_types(tweets.type, tweets.hashtags) 
         index += 1 
     
     result.fillna(0, inplace=True)

@@ -3,7 +3,6 @@ import pandas as pd
 from analyse import stats, get_hashtags, analyse_text, popular_hashtags, analyse_users
 from graph import graph
 from user import user_stats
-from collections import defaultdict
 
 def read_file(filename):
     """Top level function for parsing the data set

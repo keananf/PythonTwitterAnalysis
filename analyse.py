@@ -5,25 +5,25 @@ from functools import reduce
 stats = defaultdict(int)
 
 def get_hashtags(df):
-        """Decodes the JSON string that holds the hash tags
+    """Decodes the JSON string that holds the hash tags
+    
+    This function uses a JSON decoder to parse the entities string
+    to find the hashtags object, and then refines this to add the hashtags
+    into a list attribute in this Tweet object
+    :param df: the dataframe representing the data set
+    :return the data frame representing the hashtags based on number of usages
+    """
+    hashtags = defaultdict(int)
+    for htags in df.hashtags:
+        obj = json.loads(htags)
         
-        This function uses a JSON decoder to parse the entities string
-        to find the hashtags object, and then refines this to add the hashtags
-        into a list attribute in this Tweet object
-        :param df: the dataframe representing the data set
-        :return the data frame representing the hashtags based on number of usages
-        """
-        hashtags = defaultdict(int)
-        for entities_str in df.entities_str:
-            obj = json.loads(entities_str)
+        tags = [hashtag for hashtag in obj["hashtags"]]
+        for tag in tags:
+            hashtags[tag] += 1
             
-            tags = [hashtag["text"] for hashtag in obj["hashtags"]]
-            for tag in tags:
-                hashtags[tag] += 1
-                
-        series = pd.Series(data=hashtags)
-        series.sort_values(ascending=False, inplace=True)
-        return series
+    series = pd.Series(data=hashtags)
+    series.sort_values(ascending=False, inplace=True)
+    return series
 
 def popular_hashtags(hashtags, limit = 5):
     """Prints out the most popular hashtags
