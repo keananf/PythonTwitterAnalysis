@@ -6,26 +6,29 @@ from collections import defaultdict
 dates_dict = defaultdict(lambda: 0)
 
 def print_distrib(hashtags_distrib):
-    """Plots the dates_dict of each tweet
+    """Plots a 3D graph of hashtags and their occurrences on each day
     
-    :param hashtags_distrib: 
+    :param hashtags_distrib: The dataframe representing the number of 
+    each hashtag per day. 
     """
     fig = plt.figure()
     plot = fig.add_subplot(111, projection = '3d')
     
     hashtags = [tag for tag in hashtags_distrib.index][0:4]
-    labels = []
+    plots = []
+    ylabels =[]
+    
     column = 1
-    tag_num = 1
     for colour, tag in zip(['r', 'g', 'b', 'y'], hashtags):
         row = pd.DataFrame(hashtags_distrib.loc[tag])
         xs = row.index 
         ys = row[tag] #amount of this hashtag on this day
     
-        current_plot = plot.bar(xs, ys, zs = tag_num, zdir='y', color = colour, alpha=0.8)
-        labels.append(current_plot)
+        current_plot = plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
+        #plots.append(current_plot)
+        ylabels.append(tag)
+        ylabels.append("")
         column += 1
-        tag_num += 1
     
         
     plot.set_title("Hashtags vs Occurrences vs Day")
@@ -33,11 +36,15 @@ def print_distrib(hashtags_distrib):
     plot.set_xlabel("Day")
     plot.set_zlabel("Occurrences")
     
+    plot.set_xticks(range(0,len(hashtags_distrib.columns)))
+    plot.set_xticklabels(range(0,len(hashtags_distrib.index)))
+    plot.set_yticklabels(ylabels)
+    
     #plot.set_xticks(x)
     #plot.set_xlim(0, len(dates))
     #xticks = plot.set_xticklabels(dates)
     #plt.setp(xticks, rotation = 45, fontsize = 13)
-    #plot.legend( (plot1, plot2, plot3), ('Tweets', 'Retweets', 'Replies'), loc="best" )
+    #plot.legend( plots, labels, loc="best" )
     
     plt.show()
 
