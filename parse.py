@@ -1,4 +1,4 @@
-from refine import refine_dates, refine_data
+from refine import refine_dates, refine_data, hashtag_distribution
 import pandas as pd
 from analyse import stats, get_hashtags, analyse_text, popular_hashtags, analyse_users
 from graph import graph
@@ -31,16 +31,17 @@ def main():
     df = read_file("../#digifest16.csv")
     refine_data(df)
 
-    hashtags = get_hashtags(df)
-    dates =refine_dates(df)
-    users_df = analyse_users(df)
+    hashtag_series = get_hashtags(df)
+    dates_df = refine_dates(df)
+    hashtag_distrib = hashtag_distribution(dates_df,hashtag_series)
+    #users_df = analyse_users(df)
 
-    analyse_text(df)
-    print_results()
-    user_stats(users_df)
-    popular_hashtags(hashtags, 10)
+    #analyse_text(df)
+    #print_results()
+    #user_stats(users_df)
+    #popular_hashtags(hashtags, 10)
     
-    graph(hashtags, dates)
+    graph(dates_df,hashtag_series, hashtag_distrib)
 
 if __name__ == '__main__':
     main()

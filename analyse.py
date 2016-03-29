@@ -7,11 +7,11 @@ stats = defaultdict(int)
 def get_hashtags(df):
     """Decodes the JSON string that holds the hash tags
     
-    This function uses a JSON decoder to parse the entities string
+    This function uses a JSON decoder to parse the hashtags column
     to find the hashtags object, and then refines this to add the hashtags
-    into a list attribute in this Tweet object
+    into a new series based on number of total occurrences
     :param df: the dataframe representing the data set
-    :return the data frame representing the hashtags based on number of usages
+    :return the series representing the hashtags based on number of usages
     """
     hashtags = defaultdict(int)
     for htags in df.hashtags:
@@ -37,10 +37,10 @@ def popular_hashtags(hashtags, limit = 5):
         print(str(count) + ": " + tag)
         index += 1
 
-def _count_types(dates):
+def _count_types(types):
     
     types = defaultdict(int)
-    for tweet in dates:
+    for tweet in types:
         types[tweet] += 1
         
     return pd.Series(types)
