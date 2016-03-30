@@ -37,10 +37,10 @@ def popular_hashtags(hashtags, limit = 5):
         print(str(count) + ": " + tag)
         index += 1
 
-def _count_types(types):
+def _count_types(tweets):
     
     types = defaultdict(int)
-    for tweet in types:
+    for tweet in tweets.type:
         types[tweet] += 1
         
     return pd.Series(types)
@@ -60,7 +60,7 @@ def analyse_users(df):
                           columns = ["tweet", "retweet", "reply"])
     
     for user, tweets in user_group:
-        result.loc[user] = _count_types(tweets.type)  
+        result.loc[user] = _count_types(tweets)  
     
     result.fillna(0, inplace=True)
     stats["num_of_users"] = len(users)
