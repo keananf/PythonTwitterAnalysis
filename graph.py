@@ -5,7 +5,7 @@ from collections import defaultdict
 
 dates_dict = defaultdict(lambda: 0)
 
-def print_distrib(hashtags_distrib):
+def graph_distrib(hashtags_distrib):
     """Plots a 3D graph of hashtags and their occurrences on each day
     
     :param hashtags_distrib: The dataframe representing the number of 
@@ -40,20 +40,16 @@ def print_distrib(hashtags_distrib):
     plot.set_xticklabels(range(0,len(hashtags_distrib.index)))
     plot.set_yticklabels(ylabels)
     
-    #plot.set_xticks(x)
-    #plot.set_xlim(0, len(dates))
-    #xticks = plot.set_xticklabels(dates)
-    #plt.setp(xticks, rotation = 45, fontsize = 13)
     #plot.legend( plots, labels, loc="best" )
     
     plt.show()
 
 
-def print_dates(all_dates):
+def graph_dates(all_dates):
     """Plots the dates_dict of each tweet
     
-    :param all_dates: the all_dates df representing all the dates
-    in the collection
+    :param all_dates: the data frame describing tweets, retweets, and 
+    replies per date.
     """
     fig = plt.figure()
     plot = fig.add_subplot(111)
@@ -84,12 +80,12 @@ def print_dates(all_dates):
     
     plt.show()
 
-def print_hashtags(hashtags, limit = 10):
+def graph_hashtags(hashtags, limit = 10):
     """Prints graph for most popular hashtags
     
     Prints a bar graph for the indicated number of 
     hashtags, from least to greatest.
-    :param hashtags 
+    :param hashtags: the series describing the hashtags and numbers of occurrences.
     :param limit: the number of hashtags to print
     """
     fig = plt.figure()
@@ -114,15 +110,32 @@ def print_hashtags(hashtags, limit = 10):
     
     plt.show()
 
-def graph(dates_df,hashtag_series, hashtag_distrib):
-    """Top level function for creating graphs
+def graph_clients(clients, limit = 10):
+    """Prints graph for most popular clients
     
-    :param hashtag_series: the series describing the hashtags and numbers of occurrences. 
-    :param dates_df: the data frame describing tweets, retweets, and 
-    replies per date.
-    :param hashtag_distrib: the dataframe detailing hashtags and their occurrences
-    on EACH day
+    Prints a bar graph for the indicated number of 
+    clients, from least to greatest.
+    :param clients: the series describing the clients and numbers of occurrences.
+    :param limit: the number of clients to print
     """
-    print_dates(dates_df)
-    print_hashtags(hashtag_series)
-    print_distrib(hashtag_distrib)
+    fig = plt.figure()
+    plot = fig.add_subplot(111)
+    
+    pop_clients = list(reversed([tag for tag,count in clients.iteritems()][0:limit]))
+
+    x = range(limit) #spacing 
+    y = list(reversed([count for tag,count in clients.iteritems()][0:limit])) #values
+    width = 0.5
+    
+    plot.bar(x, y, width, color="b")
+    plot.set_title("Number of uses of Clients vs Client")
+    plot.set_ylabel("Number of uses of Clients")
+    plot.set_xlabel("Client")
+    plot.set_xticks(x)
+    
+    plot.set_ylim(0, y[-1]*1.25)
+    plot.set_xlim(0, limit) 
+    xticks = plot.set_xticklabels(pop_clients)
+    plt.setp(xticks, rotation=45, fontsize=13)
+    
+    plt.show()
