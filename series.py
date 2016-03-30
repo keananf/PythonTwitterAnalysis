@@ -23,7 +23,7 @@ def create_hashtags_series(df):
     series.sort_values(ascending=False, inplace=True)
     return series
 
-def create_clients_series(df):
+def create_applications_series(df):
     """Analyse the days and their tweets
     
     This function groups the df by sources, and then creates a dictionary

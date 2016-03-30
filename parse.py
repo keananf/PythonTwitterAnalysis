@@ -1,9 +1,10 @@
 from refine import refine_data
-from dataframes import create_dates, hashtag_distribution
-from series import create_hashtags_series, create_clients_series
+from dataframes import create_dates, hashtag_distribution, analyse_users,\
+    users_distribution
+from series import create_hashtags_series, create_applications_series
 import pandas as pd
-from analyse import stats, analyse_text, popular_hashtags, analyse_users
-from graph import graph_dates, graph_distrib, graph_hashtags, graph_clients
+from analyse import stats, analyse_text, popular_hashtags
+from graph import graph_dates, graph_hashtags_distrib, graph_hashtags, graph_applications, graph_users_distrib
 from user import user_stats
 
 def read_file(filename):
@@ -33,20 +34,22 @@ def main():
     df = read_file("../#digifest16.csv")
     refine_data(df)
 
-    client_series = create_clients_series(df)
+    applications_series = create_applications_series(df)
     hashtag_series = create_hashtags_series(df)
     dates_df = create_dates(df)
     hashtag_distrib = hashtag_distribution(dates_df,hashtag_series)
-    #users_df = analyse_users(df)
+    users_df = analyse_users(df)
+    users_distrib = users_distribution(dates_df, users_df)
     #analyse_text(df)
     #print_results()
     #user_stats(users_df)
-    #popular_hashtags(hashtags, 10)
+    #popular_hashtags(hashtag_series, 10)
     
-    graph_clients(client_series)
+    graph_applications(applications_series)
     graph_hashtags(hashtag_series)
     graph_dates(dates_df)
-    graph_distrib(hashtag_distrib)
+    graph_hashtags_distrib(hashtag_distrib)
+    graph_users_distrib(users_distrib)
 
 if __name__ == '__main__':
     main()

@@ -16,36 +16,6 @@ def popular_hashtags(hashtags, limit = 5):
         print(str(count) + ": " + tag)
         index += 1
 
-def _count_types(tweets):
-    
-    types = defaultdict(int)
-    for tweet in tweets.type:
-        types[tweet] += 1
-        
-    return pd.Series(types)
-
-def analyse_users(df):
-    """Analyse the users and their tweets
-    
-    This function groups the df by users, and then calls a function
-    to analyse each user based on the types of each tweet in their group.
-    These are added to a series representing the row (1 user), and then
-    added to the data frame.
-    :param df: the dataframe representing the data set
-    """
-    user_group = df.groupby("from_user")
-    users = [user for user, tweet in user_group]
-    result = pd.DataFrame(index = users, 
-                          columns = ["tweet", "retweet", "reply"])
-    
-    for user, tweets in user_group:
-        result.loc[user] = _count_types(tweets)  
-    
-    result.fillna(0, inplace=True)
-    stats["num_of_users"] = len(users)
-    return result
-
-
 def analyse_text(df):
     """Function for ascertaining the numbers of types of tweet
   

@@ -1,11 +1,11 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-from mpl_toolkits.mplot3d import Axes3D
+import mpl_toolkits.mplot3d
 from collections import defaultdict
 
 dates_dict = defaultdict(lambda: 0)
 
-def graph_distrib(hashtags_distrib):
+def graph_hashtags_distrib(hashtags_distrib):
     """Plots a 3D graph of hashtags and their occurrences on each day
     
     :param hashtags_distrib: The dataframe representing the number of 
@@ -14,8 +14,7 @@ def graph_distrib(hashtags_distrib):
     fig = plt.figure()
     plot = fig.add_subplot(111, projection = '3d')
     
-    hashtags = [tag for tag in hashtags_distrib.index][0:4]
-    plots = []
+    hashtags = [tag for tag in hashtags_distrib.index][1:5]
     ylabels =[]
     
     column = 1
@@ -24,8 +23,7 @@ def graph_distrib(hashtags_distrib):
         xs = row.index 
         ys = row[tag] #amount of this hashtag on this day
     
-        current_plot = plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
-        #plots.append(current_plot)
+        plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
         ylabels.append(tag)
         ylabels.append("")
         column += 1
@@ -40,7 +38,41 @@ def graph_distrib(hashtags_distrib):
     plot.set_xticklabels(range(0,len(hashtags_distrib.index)))
     plot.set_yticklabels(ylabels)
     
-    #plot.legend( plots, labels, loc="best" )
+    plt.show()
+
+
+def graph_users_distrib(users_distrib):
+    """Plots a 3D graph of users and their occurrences on each day
+    
+    :param users_distrib: The dataframe representing the number of 
+    each tweets each user posted per day. 
+    """
+    fig = plt.figure()
+    plot = fig.add_subplot(111, projection = '3d')
+    
+    users = [user for user in users_distrib.index][0:4]
+    ylabels =[]
+    
+    column = 1
+    for colour, user in zip(['r', 'g', 'b', 'y'], users):
+        row = pd.DataFrame(users_distrib.loc[user])
+        xs = row.index 
+        ys = row[user] #amount of this hashtag on this day
+    
+        plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
+        ylabels.append(user)
+        ylabels.append("")
+        column += 1
+    
+        
+    plot.set_title("Users vs Number of Tweets vs Day")
+    plot.set_ylabel("User")
+    plot.set_xlabel("Day")
+    plot.set_zlabel("Number of Tweets")
+    
+    plot.set_xticks(range(0,len(users_distrib.columns)))
+    plot.set_xticklabels(range(0,len(users_distrib.index)))
+    plot.set_yticklabels(ylabels)
     
     plt.show()
 
@@ -91,10 +123,10 @@ def graph_hashtags(hashtags, limit = 10):
     fig = plt.figure()
     plot = fig.add_subplot(111)
     
-    pop_tags = list(reversed([tag for tag,count in hashtags.iteritems()][0:limit]))
+    pop_tags = list(reversed([tag for tag,count in hashtags.iteritems()][1:limit+1]))
 
     x = range(limit) #spacing 
-    y = list(reversed([count for tag,count in hashtags.iteritems()][0:limit])) #values
+    y = list(reversed([count for tag,count in hashtags.iteritems()][1:limit+1])) #values
     width = 0.5
     
     plot.bar(x, y, width, color="g")
@@ -110,7 +142,7 @@ def graph_hashtags(hashtags, limit = 10):
     
     plt.show()
 
-def graph_clients(clients, limit = 10):
+def graph_applications(clients, limit = 10):
     """Prints graph for most popular clients
     
     Prints a bar graph for the indicated number of 
