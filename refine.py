@@ -1,6 +1,5 @@
 import re, operator, json, pandas as pd
 from functools import reduce
-from collections import defaultdict
 
 def _convert_time(date):
     return pd.to_datetime(date.split(" ")[0], format="%d/%m/%Y")
@@ -13,7 +12,7 @@ def _convert_hashtags(entities_string):
     
     return json.dumps(json_obj)
 
-def tweet_type(text):
+def _tweet_type(text):
     """Function for ascertaining the numbers of types of tweet
   
     This function looks at the first element in the 
@@ -33,6 +32,27 @@ def tweet_type(text):
     
     return "tweet"
   
+def _get_mentions(text):
+    """Reads in the text of a tweet and looks for mentions
+    
+    Loops through the words in the text of a tweet, and 
+    looks for all mentions. These are added to a list, which
+    is convert to a json object. This functions is mapped
+    to the entire text column in the dataframe, so that a column 
+    called "mentions" is produced
+    :param text: the text of the tweet
+    :return a json object representing all mentions
+    """
+    pattern = re.compile("@.")
+    words = text.split(" ")
+    
+    mentions = []
+    for word in words:
+        if pattern.match(word):
+            mentions.append(word.split("@")[1])
+    
+    return json.dumps({"mentions": mentions})
+  
 def refine_data(df):
     """Eliminates unnecessary columns
     
@@ -44,8 +64,10 @@ def refine_data(df):
         df.pop(column)
     
     df.drop_duplicates(["id_str"], inplace=True)
-    df['type'] = df['text'].map(tweet_type)
+    
+    df['type'] = df['text'].map(_tweet_type)
     df['time'] = df['time'].map(_convert_time)
+    df['mentions'] = df['text'].map(_get_mentions)
     df['hashtags'] = df['entities_str'].map(_convert_hashtags)
     df.pop("entities_str")
     df.to_csv("../refined_digifest16.csv", index=False)
