@@ -11,7 +11,7 @@ def user_stats(users_df):
     stats["mean_replies"] = mean(users_df.reply)
     stats["mean_replied"] = mean(users_df.replied)
     stats["mean_retweeted"] = mean(users_df.retweeted)
-    stats["mean_mentions"] = mean(users_df.mentions)
+    stats["mean_mentions"] = mean(users_df.mentioned)
 
 
     users_df['tweet_deviation'] = users_df['tweet'].map(lambda tweet: (tweet - stats["mean_tweets"]) ** 2)
@@ -20,7 +20,7 @@ def user_stats(users_df):
 
     users_df['replied_deviation'] = users_df['replied'].map(lambda tweet: (tweet - stats["mean_replied"]) ** 2)
     users_df['retweeted_deviation'] = users_df['retweeted'].map(lambda retweet: (retweet - stats["mean_retweeted"]) ** 2)
-    users_df['mentions_deviation'] = users_df['mentions'].map(lambda reply: (reply - stats["mean_mentions"]) ** 2)
+    users_df['mentions_deviation'] = users_df['mentioned'].map(lambda reply: (reply - stats["mean_mentions"]) ** 2)
 
     stats["std_dev_tweets"] = std_dev(list(users_df.tweet_deviation))
     stats["std_dev_retweets"] = std_dev(list(users_df.retweet_deviation))
