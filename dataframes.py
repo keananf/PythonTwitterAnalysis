@@ -138,7 +138,6 @@ def _count_retweets(df):
     for row in retweets_df.mentions:
         row = json.loads(row)
         if(len(row["mentions"])):
-            print(row["mentions"][0])
             retweets[row["mentions"][0]] += 1
 
     return pd.Series(retweets)
@@ -155,12 +154,12 @@ def analyse_users(df):
     user_group = df.groupby("from_user")
     users = [user for user, tweet in user_group]
     result = pd.DataFrame(index = users,
-                          columns = ["tweet", "retweet", "reply", "total", "mentions"])
+                          columns = ["tweet", "retweet", "reply", "total"])
 
     for user, tweets in user_group:
         result.loc[user] = _count_types(tweets)
 
-    result["mentions"] = _count_mentions(df)
+    result["mentioned"] = _count_mentions(df)
     result["replied"] = _count_replies(df)
     result["retweeted"] = _count_retweets(df)
 
