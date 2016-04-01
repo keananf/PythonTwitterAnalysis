@@ -87,15 +87,17 @@ def graph_dates(all_dates):
     plot = fig.add_subplot(111)
     
     dates = all_dates.index
-    width = .35
+    width = .25
     x = range(len(dates)) #spacing 
     
     tweet = list(all_dates.tweet) #values  
     plot1 = plot.bar(x, tweet, width, color="b")
 
+    x = [num + width for num in x] #set location of next bar
     retweet = list(all_dates.retweet) #values  
     plot2 = plot.bar(x, retweet, width, color="g")
     
+    x = [num + width for num in x] #set location of next bar
     reply = list(all_dates.reply) #values  
     plot3 = plot.bar(x, reply, width, color="r")
 
