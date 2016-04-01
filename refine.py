@@ -5,7 +5,16 @@ def _convert_time(date):
     return pd.to_datetime(date.split(" ")[0], format="%d/%m/%Y")
 
 def _convert_hashtags(entities_string):
+    """Reads in the entities string and looks for hashtags
     
+    Parses the json entities string and looks for hashtags.
+    These are added to a list, which
+    is convert to a json object. This functions is mapped
+    to the entire text column in the dataframe, so that a column 
+    called "hashtags" is produced
+    :param text: the entities string to be parsed
+    :return a json object representing all hashtags
+    """
     obj = json.loads(entities_string)
     hashtags = [hashtag["text"] for hashtag in obj["hashtags"]]
     json_obj = {'hashtags': hashtags}
@@ -32,26 +41,22 @@ def _tweet_type(text):
     
     return "tweet"
   
-def _get_mentions(text):
-    """Reads in the text of a tweet and looks for mentions
+def _get_mentions(entities_string):
+    """Reads in the entities string and looks for mentions
     
-    Loops through the words in the text of a tweet, and 
-    looks for all mentions. These are added to a list, which
+    Parses the json entities string and looks for mentions.
+    These are added to a list, which
     is convert to a json object. This functions is mapped
     to the entire text column in the dataframe, so that a column 
     called "mentions" is produced
-    :param text: the text of the tweet
+    :param text: the entities string to be parsed
     :return a json object representing all mentions
     """
-    pattern = re.compile("@.")
-    words = text.split(" ")
+    obj = json.loads(entities_string)
+    mentions = [mentions["screen_name"] for mentions in obj["user_mentions"]]
+    json_obj = {'mentions': mentions}
     
-    mentions = []
-    for word in words:
-        if pattern.match(word):
-            mentions.append(word.split("@")[1])
-    
-    return json.dumps({"mentions": mentions})
+    return json.dumps(json_obj)
   
 def refine_data(df):
     """Eliminates unnecessary columns
@@ -59,15 +64,15 @@ def refine_data(df):
     :param: the data frame representing all tweets in the data set
     """
     for column in ["in_reply_to_user_id_str","created_at","geo_coordinates","user_lang",
-             "in_reply_to_status_id_str","in_reply_to_screen_name","status_url",
-             "user_friends_count","from_user_id_str","user_followers_count","profile_image_url"]:
+             "in_reply_to_status_id_str", "status_url", "user_friends_count",
+             "from_user_id_str","user_followers_count","profile_image_url"]:
         df.pop(column)
     
     df.drop_duplicates(["id_str"], inplace=True)
     
     df['type'] = df['text'].map(_tweet_type)
     df['time'] = df['time'].map(_convert_time)
-    df['mentions'] = df['text'].map(_get_mentions)
+    df['mentions'] = df['entities_str'].map(_get_mentions)
     df['hashtags'] = df['entities_str'].map(_convert_hashtags)
     df.pop("entities_str")
     df.to_csv("../refined_digifest16.csv", index=False)

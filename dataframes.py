@@ -58,7 +58,6 @@ def create_dates(df):
         index += 1 
     
     result.fillna(0, inplace=True)
-    print(result)
     return result
 
 def hashtag_distribution(all_dates, hashtags_series):
@@ -116,6 +115,17 @@ def _count_types(tweets):
     types["total"] = total
     return pd.Series(types)
 
+def _count_mentions(df):
+    
+    mentions = defaultdict(int)
+    for row in df.mentions:
+        row = json.loads(row)
+        for mention in row["mentions"]: 
+            mentions[mention] += 1
+        
+    return pd.Series(mentions)
+
+
 
 def analyse_users(df):
     """Analyse the users and their tweets
@@ -129,13 +139,16 @@ def analyse_users(df):
     user_group = df.groupby("from_user")
     users = [user for user, tweet in user_group]
     result = pd.DataFrame(index = users, 
-                          columns = ["tweet", "retweet", "reply", "total"])
+                          columns = ["tweet", "retweet", "reply", "total", "mentions"])
     
     for user, tweets in user_group:
         result.loc[user] = _count_types(tweets)  
+        
+    result["mentions"] = _count_mentions(df)
     
     result.fillna(0, inplace=True)
     result.sort_values(by='total', ascending=False, inplace=True)
     stats["num_of_users"] = len(users)
+    print(result)
     return result
 
