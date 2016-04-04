@@ -77,6 +77,44 @@ def graph_users_distrib(users_distrib):
     plt.show()
 
 
+def graph_users(users_df):
+    """Plots the number of times users interacted with eachother
+    
+    :param users_df: the data frame describing how many times each user was
+    mentioned, retweeted, and replied.
+    """
+    fig = plt.figure()
+    plot = fig.add_subplot(111)
+    
+    users = users_df.index[0:10]
+    width = .25
+    x = range(len(users)) #spacing 
+    
+    mentioned = list(users_df.mentioned)[0:10] #values  
+    plot1 = plot.bar(x, mentioned, width, color="b")
+
+    x = [num + width for num in x] #set location of next bar
+    retweeted = list(users_df.retweeted)[0:10] #values  
+    plot2 = plot.bar(x, retweeted, width, color="g")
+    
+    x = [num + width for num in x] #set location of next bar
+    replied = list(users_df.replied)[0:10] #values  
+    plot3 = plot.bar(x, replied, width, color="r")
+
+   
+    plot.set_title("Total Tweets vs Users")
+    plot.set_ylabel("Total Tweets")
+    plot.set_xlabel("User")
+    
+    plot.set_xticks(x)
+    plot.set_xlim(0, len(users))
+    xticks = plot.set_xticklabels(users)
+    plt.setp(xticks, rotation = 45, fontsize = 13)
+    plot.legend( (plot1, plot2, plot3), ('Mentioned', 'Retweeted', 'Replied'), loc="best" )
+    
+    plt.show()
+
+
 def graph_dates(all_dates):
     """Plots the dates_dict of each tweet
     

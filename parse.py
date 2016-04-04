@@ -4,7 +4,7 @@ from dataframes import create_dates, hashtag_distribution, analyse_users,\
 from series import create_hashtags_series, create_applications_series
 import pandas as pd
 from analyse import stats, analyse_text, popular_hashtags
-from graph import graph_dates, graph_hashtags_distrib, graph_hashtags, graph_applications, graph_users_distrib
+from graph import graph_dates, graph_hashtags_distrib, graph_hashtags, graph_applications, graph_users_distrib, graph_users
 from user import user_stats
 
 def read_file(filename):
@@ -33,7 +33,6 @@ def print_results():
 def main():
     df = read_file("../#digifest16.csv")
     refine_data(df)
-
     applications_series = create_applications_series(df)
     hashtag_series = create_hashtags_series(df)
     dates_df = create_dates(df)
@@ -48,6 +47,7 @@ def main():
     graph_applications(applications_series)
     graph_hashtags(hashtag_series)
     graph_dates(dates_df)
+    graph_users(users_df)
     graph_hashtags_distrib(hashtag_distrib)
     graph_users_distrib(users_distrib)
 
