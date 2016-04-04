@@ -1,8 +1,12 @@
 import re, operator, json, pandas as pd
 from functools import reduce
 
-def _convert_time(date):
-    return pd.to_datetime(date.split(" ")[0], format="%d/%m/%Y")
+def _get_day(date):
+    return date.split(" ")[0]
+
+def _get_hour(date):
+    return pd.to_datetime(date.split(" ")[1], format="%H:%M:%S").isoformat().split("T")[1].split(":")[0]
+
 
 def _convert_hashtags(entities_string):
     """Reads in the entities string and looks for hashtags
@@ -71,9 +75,11 @@ def refine_data(df):
     df.drop_duplicates(["id_str"], inplace=True)
     
     df['type'] = df['text'].map(_tweet_type)
-    df['time'] = df['time'].map(_convert_time)
+    df['day'] = df['time'].map(_get_day)
+    df['hour'] = df['time'].map(_get_hour)
     df['mentions'] = df['entities_str'].map(_get_mentions)
     df['hashtags'] = df['entities_str'].map(_convert_hashtags)
     df.pop("entities_str")
+    df.pop("time")
     df.to_csv("../refined_digifest16.csv", index=False)
 

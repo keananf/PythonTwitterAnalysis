@@ -46,14 +46,14 @@ def create_dates(df):
     :return the dataframe representing the dates' activity
     """
     index = 0
-    time_group = df.groupby("time")
-    times = [time for time,tweets in time_group]
+    day_group = df.groupby("day")
+    days = [day for day, tweets in day_group]
 
-    result = pd.DataFrame(index = times,
+    result = pd.DataFrame(index = days,
                           columns = ["tweet", "retweet", "reply", "hashtags", "users"])
     result.reset_index(inplace=True)
 
-    for time, tweets in time_group:
+    for day, tweets in day_group:
         result.loc[index] = _count_tweet_types(tweets)
         index += 1
 
@@ -167,5 +167,4 @@ def analyse_users(df):
     result.fillna(0, inplace=True)
     result.sort_values(by='total', ascending=False, inplace=True)
     stats["num_of_users"] = len(users)
-    print(result[:60])
     return result

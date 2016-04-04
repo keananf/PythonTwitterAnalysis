@@ -4,6 +4,35 @@ import mpl_toolkits.mplot3d
 from collections import defaultdict
 
 dates_dict = defaultdict(lambda: 0)
+ 
+def graph_hours(hours_series):
+    """Prints graph for hours vs tweets during the event
+    
+    Prints a histogram for the hours of the event, with values being
+    the number of tweets in the hour
+    :param hours_series: the series describing the hours and numbers of occurrences.
+    """
+    fig = plt.figure(figsize=(15,6))
+    plot = fig.add_subplot(111)
+    
+    hours = [hour for hour, num_tweets in hours_series.iteritems()]
+
+    x = range(len(hours)) #spacing 
+    y = [num_tweets for hour, num_tweets in hours_series.iteritems()] #values
+    width = 0.25
+    
+    plot.bar(x, y, width, color="g")
+    plot.set_title("Number of Tweets vs Hour of Event")
+    plot.set_ylabel("Number of Tweets")
+    plot.set_xlabel("Hour")
+    plot.set_xticks(x)
+    
+    xticks = plot.set_xticklabels(hours)
+    plt.setp(xticks, rotation=45, fontsize=13)
+    
+    plt.show()
+    fig.savefig("pop-hours.png")
+
 
 def graph_hashtags_distrib(hashtags_distrib):
     """Plots a 3D graph of hashtags and their occurrences on each day
@@ -39,6 +68,7 @@ def graph_hashtags_distrib(hashtags_distrib):
     plot.set_yticklabels(ylabels)
     
     plt.show()
+    fig.savefig("hashtag-distrib.png")
 
 
 def graph_users_distrib(users_distrib):
@@ -75,7 +105,7 @@ def graph_users_distrib(users_distrib):
     plot.set_yticklabels(ylabels)
     
     plt.show()
-
+    fig.savefig("users-distrib.png")
 
 def graph_users(users_df):
     """Plots the number of times users interacted with eachother
@@ -113,6 +143,7 @@ def graph_users(users_df):
     plot.legend( (plot1, plot2, plot3), ('Mentioned', 'Retweeted', 'Replied'), loc="best" )
     
     plt.show()
+    fig.savefig("users-df.png")
 
 
 def graph_dates(all_dates):
@@ -151,6 +182,7 @@ def graph_dates(all_dates):
     plot.legend( (plot1, plot2, plot3), ('Tweets', 'Retweets', 'Replies'), loc="best" )
     
     plt.show()
+    fig.savefig("dates.png")
 
 def graph_hashtags(hashtags, limit = 10):
     """Prints graph for most popular hashtags
@@ -181,6 +213,7 @@ def graph_hashtags(hashtags, limit = 10):
     plt.setp(xticks, rotation=45, fontsize=13)
     
     plt.show()
+    fig.savefig("pop-hashtags.png")
 
 def graph_applications(clients, limit = 10):
     """Prints graph for most popular clients
@@ -211,3 +244,4 @@ def graph_applications(clients, limit = 10):
     plt.setp(xticks, rotation=45, fontsize=13)
     
     plt.show()
+    fig.savefig("pop-apps.png")

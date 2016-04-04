@@ -23,6 +23,34 @@ def create_hashtags_series(df):
     series.sort_values(ascending=False, inplace=True)
     return series
 
+def create_hours_series(df):
+    """Analyse the hours and their tweets
+    
+    This function groups the df by day, and then groups each
+    day group by the hour. This is only done for the two days of the
+    conference, since other days have comparatively little activity.
+    These are added to a series representing this distribution
+    :param df: the dataframe representing the data set
+    :return the series representing hours and tweets in that hour
+    """
+    days_group = df.groupby("day")
+    day1 = days_group.get_group("02/03/2016")
+    day2 = days_group.get_group("03/03/2016")
+    
+    hours = defaultdict(int)
+    
+    for hour, tweets in day1.groupby("hour"):
+        hour = int(hour)
+        hours[hour] = len(tweets.index)
+    
+    for hour, tweets in day2.groupby("hour"):
+        hour = int(hour) + 24 #represents day two for graph
+        hours[hour] = len(tweets.index)    
+        
+            
+    series = pd.Series(data=hours)
+    series.sort_index()
+    return series
 def create_applications_series(df):
     """Analyse the days and their tweets
     
