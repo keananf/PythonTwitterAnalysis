@@ -2,7 +2,7 @@ import re, operator, json, pandas as pd
 from functools import reduce
 
 def _get_day(date):
-    return date.split(" ")[0]
+    return pd.to_datetime(date.split(" ")[0], format="%d/%m/%Y").isoformat().split("T")[0]
 
 def _get_hour(date):
     return pd.to_datetime(date.split(" ")[1], format="%H:%M:%S").isoformat().split("T")[1].split(":")[0]

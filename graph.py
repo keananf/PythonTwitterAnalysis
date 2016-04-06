@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from wordcloud import WordCloud
 import pandas as pd
 import mpl_toolkits.mplot3d
 from collections import defaultdict
@@ -40,7 +41,7 @@ def graph_hashtags_distrib(hashtags_distrib):
     :param hashtags_distrib: The dataframe representing the number of 
     each hashtag per day. 
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=(20,15))
     plot = fig.add_subplot(111, projection = '3d')
     
     hashtags = [tag for tag in hashtags_distrib.index][1:5]
@@ -49,7 +50,7 @@ def graph_hashtags_distrib(hashtags_distrib):
     column = 1
     for colour, tag in zip(['r', 'g', 'b', 'y'], hashtags):
         row = pd.DataFrame(hashtags_distrib.loc[tag])
-        xs = row.index 
+        xs = range(0, len(row.index)) 
         ys = row[tag] #amount of this hashtag on this day
     
         plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
@@ -64,7 +65,7 @@ def graph_hashtags_distrib(hashtags_distrib):
     plot.set_zlabel("Occurrences")
     
     plot.set_xticks(range(0,len(hashtags_distrib.columns)))
-    plot.set_xticklabels(range(0,len(hashtags_distrib.index)))
+    plot.set_xticklabels(list(hashtags_distrib.columns.values))
     plot.set_yticklabels(ylabels)
     
     plt.show()
@@ -77,7 +78,7 @@ def graph_users_distrib(users_distrib):
     :param users_distrib: The dataframe representing the number of 
     each tweets each user posted per day. 
     """
-    fig = plt.figure()
+    fig = plt.figure(figsize=(20,15))
     plot = fig.add_subplot(111, projection = '3d')
     
     users = [user for user in users_distrib.index][0:4]
@@ -86,9 +87,9 @@ def graph_users_distrib(users_distrib):
     column = 1
     for colour, user in zip(['r', 'g', 'b', 'y'], users):
         row = pd.DataFrame(users_distrib.loc[user])
-        xs = row.index 
+        xs = range(0, len(row.index)) 
         ys = row[user] #amount of this hashtag on this day
-    
+        
         plot.bar(xs, ys, zs = column, zdir='y', color = colour, alpha=0.8)
         ylabels.append(user)
         ylabels.append("")
@@ -101,7 +102,7 @@ def graph_users_distrib(users_distrib):
     plot.set_zlabel("Number of Tweets")
     
     plot.set_xticks(range(0,len(users_distrib.columns)))
-    plot.set_xticklabels(range(0,len(users_distrib.index)))
+    plot.set_xticklabels(list(users_distrib.columns.values))
     plot.set_yticklabels(ylabels)
     
     plt.show()
@@ -155,8 +156,8 @@ def graph_dates(all_dates):
     fig = plt.figure()
     plot = fig.add_subplot(111)
     
-    dates = all_dates.index
-    width = .25
+    dates = all_dates.day
+    width = .2
     x = range(len(dates)) #spacing 
     
     tweet = list(all_dates.tweet) #values  
@@ -178,7 +179,7 @@ def graph_dates(all_dates):
     plot.set_xticks(x)
     plot.set_xlim(0, len(dates))
     xticks = plot.set_xticklabels(dates)
-    plt.setp(xticks, rotation = 45, fontsize = 13)
+    plt.setp(xticks, rotation = -45, fontsize = 13)
     plot.legend( (plot1, plot2, plot3), ('Tweets', 'Retweets', 'Replies'), loc="best" )
     
     plt.show()
@@ -245,3 +246,20 @@ def graph_applications(clients, limit = 10):
     
     plt.show()
     fig.savefig("pop-apps.png")
+
+def hashtag_wordcloud(hashtags):
+    """Creates a wordcloud of hashtags, based on occurrences
+
+    The wordcloud is created using the hashtags series, which
+    is converted to a list of tuples, so that it can work with
+    the wordcloud module. The size of each hashtag is dependent 
+    upon the number of occurrences, and they scale accordingly
+    :param hashtags: the hashtags series mapping hashtags to total occurrences
+    """
+    list_hashtags = hashtags.to_dict().items()
+    wordcloud = WordCloud(background_color = 'black', width = 1200, height = 1000).fit_words(list_hashtags)
+
+    plt.figure()
+    plt.imshow(wordcloud)
+    plt.axis('off')
+    plt.show()

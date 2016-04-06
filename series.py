@@ -34,8 +34,8 @@ def create_hours_series(df):
     :return the series representing hours and tweets in that hour
     """
     days_group = df.groupby("day")
-    day1 = days_group.get_group("02/03/2016")
-    day2 = days_group.get_group("03/03/2016")
+    day1 = days_group.get_group("2016-03-02")
+    day2 = days_group.get_group("2016-03-03")
     
     hours = defaultdict(int)
     

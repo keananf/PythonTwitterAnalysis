@@ -57,7 +57,10 @@ def create_dates(df):
         result.loc[index] = _count_tweet_types(tweets)
         index += 1
 
+    result['day'] = pd.Series(days)
+
     result.fillna(0, inplace=True)
+    result.sort_values(by='day', inplace=True)
     return result
 
 def hashtag_distribution(all_dates, hashtags_series):
@@ -72,12 +75,10 @@ def hashtag_distribution(all_dates, hashtags_series):
     :param hashtags_series: the series of hashtags with total occurrences.
     :return a new dataframe representing hashtags and their occurrences on each day
     """
-    index = 0
     result = pd.DataFrame(index = hashtags_series.index)
 
     for date in all_dates.itertuples():
-        result[index] = pd.Series(date[5])
-        index += 1
+        result[date[7]] = pd.Series(date[5])
 
     result.fillna(0, inplace=True)
     return result
@@ -94,12 +95,10 @@ def users_distribution(all_dates, users_df):
     :param users_df: the dataframe representing unique users
     :return a new dataframe representing users and their number of tweets on each day
     """
-    index = 0
-    result = pd.DataFrame(index = users_df.index)
+    result = pd.DataFrame(index = users_df.index, columns = [str(day) for day in all_dates.day])
 
     for date in all_dates.itertuples():
-        result[index] = pd.Series(date[6])
-        index += 1
+        result[date[7]] = pd.Series(date[6])
 
     result.fillna(0, inplace=True)
     return result
