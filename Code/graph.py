@@ -3,8 +3,16 @@ from wordcloud import WordCloud
 import pandas as pd
 import mpl_toolkits.mplot3d
 from collections import defaultdict
+import os
 
 dates_dict = defaultdict(lambda: 0)
+
+def save(figure, name):
+    """Save the matplotlib figure to pics/name.png
+    """
+    if not os.path.exists("pics"):
+        os.mkdir("pics")
+    figure.savefig("pics/" + name + ".png")
  
 def graph_hours(hours_series):
     """Prints graph for hours vs tweets during the event
@@ -32,7 +40,8 @@ def graph_hours(hours_series):
     plt.setp(xticks, rotation=45, fontsize=13)
     
     plt.show()
-    fig.savefig("pics/pop-hours.png")
+    #fig.savefig("pics/pop-hours.png")
+    save(fig, "pop-hours")
 
 
 def graph_hashtags_distrib(hashtags_distrib):
@@ -69,7 +78,8 @@ def graph_hashtags_distrib(hashtags_distrib):
     plot.set_yticklabels(ylabels)
     
     plt.show()
-    fig.savefig("pics/hashtag-distrib.png")
+    #fig.savefig("pics/hashtag-distrib.png")
+    save(fig, "hashtag-distrib")
 
 
 def graph_users_distrib(users_distrib):
@@ -106,7 +116,8 @@ def graph_users_distrib(users_distrib):
     plot.set_yticklabels(ylabels)
     
     plt.show()
-    fig.savefig("pics/users-distrib.png")
+    #fig.savefig("pics/users-distrib.png")
+    save(fig, "users-distrib")
 
 def graph_users(users_df):
     """Plots the number of times users interacted with eachother
@@ -144,7 +155,8 @@ def graph_users(users_df):
     plot.legend( (plot1, plot2, plot3), ('Mentioned', 'Retweeted', 'Replied'), loc="best" )
     
     plt.show()
-    fig.savefig("pics/users-df.png")
+    #fig.savefig("pics/users-df.png")
+    save(fig, "users-df")
 
 
 def graph_dates(all_dates):
@@ -183,7 +195,8 @@ def graph_dates(all_dates):
     plot.legend( (plot1, plot2, plot3), ('Tweets', 'Retweets', 'Replies'), loc="best" )
     
     plt.show()
-    fig.savefig("pics/dates.png")
+    #fig.savefig("pics/dates.png")
+    save(fig, "dates")
 
 def graph_hashtags(hashtags, limit = 10):
     """Prints graph for most popular hashtags
@@ -214,7 +227,8 @@ def graph_hashtags(hashtags, limit = 10):
     plt.setp(xticks, rotation=45, fontsize=13)
     
     plt.show()
-    fig.savefig("pics/pop-hashtags.png")
+    #fig.savefig("pics/pop-hashtags.png")
+    save(fig, "pop-hashtags")
 
 def graph_applications(clients, limit = 10):
     """Prints graph for most popular clients
@@ -245,7 +259,8 @@ def graph_applications(clients, limit = 10):
     plt.setp(xticks, rotation=45, fontsize=13)
     
     plt.show()
-    fig.savefig("pics/pop-apps.png")
+    #fig.savefig("pics/pop-apps.png")
+    save(fig, "pop-apps")
 
 def hashtag_wordcloud(hashtags):
     """Creates a wordcloud of hashtags, based on occurrences
